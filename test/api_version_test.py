@@ -29,6 +29,20 @@ class ApiVersionTest(TestCase):
         with self.assertRaises(shopify.VersionNotFoundError):
             shopify.ApiVersion.coerce_to_version("crazy-name")
 
+    def test_coerce_to_version_creates_new_release_on_the_fly(self):
+        new_version = "2025-01"
+        coerced_version = shopify.ApiVersion.coerce_to_version(new_version)
+
+        self.assertIsInstance(coerced_version, shopify.Release)
+        self.assertEqual(coerced_version.name, new_version)
+        self.assertEqual(
+            coerced_version.api_path("https://test.myshopify.com"),
+            f"https://test.myshopify.com/admin/api/{new_version}",
+        )
+
+        # Verify that the new version is not added to the known versions
+        self.assertNotIn(new_version, shopify.ApiVersion.versions)
+
 
 class ReleaseTest(TestCase):
     def test_raises_if_format_invalid(self):

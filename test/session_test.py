@@ -288,3 +288,16 @@ class SessionTest(TestCase):
         scheme, netloc, path, query, fragment = urllib.parse.urlsplit(url)
         query = "&".join(sorted(query.split("&")))
         return urllib.parse.urlunsplit((scheme, netloc, path, query, fragment))
+
+    def test_session_with_coerced_version(self):
+        future_version = "2030-01"
+        session = shopify.Session("test.myshopify.com", future_version, "token")
+        self.assertEqual(session.api_version.name, future_version)
+        self.assertEqual(
+            session.api_version.api_path("https://test.myshopify.com"),
+            f"https://test.myshopify.com/admin/api/{future_version}",
+        )
+
+    def test_session_with_invalid_version(self):
+        with self.assertRaises(shopify.VersionNotFoundError):
+            shopify.Session("test.myshopify.com", "invalid-version", "token")
