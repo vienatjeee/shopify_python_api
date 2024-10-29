@@ -17,6 +17,9 @@ class ApiVersion(object):
         try:
             return cls.versions[version]
         except KeyError:
+            # Dynamically create a new Release object if version string is not found
+            if Release.FORMAT.match(version):
+                return Release(version)
             raise VersionNotFoundError
 
     @classmethod
@@ -39,6 +42,7 @@ class ApiVersion(object):
         cls.define_version(Release("2024-01"))
         cls.define_version(Release("2024-04"))
         cls.define_version(Release("2024-07"))
+        cls.define_version(Release("2024-10"))
 
     @classmethod
     def clear_defined_versions(cls):
