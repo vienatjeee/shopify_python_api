@@ -1,4 +1,7 @@
 == Unreleased
+
+== Version 12.7.0
+
 - Remove requirement to use a predefined API version. Now you can use any valid API version string. ([#737](https://github.com/Shopify/shopify_python_api/pull/737))
 
 == Version 12.6.0
